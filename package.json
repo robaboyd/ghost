@@ -1,0 +1,26 @@
+{
+  "name": "ghost",
+  "version": "0.0.1",
+  "description": "Ghost Virtual Assistant",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "cd client && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robaboyd/ghost.git"
+  },
+  "author": "Bobby Boyd",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robaboyd/ghost/issues"
+  },
+  "homepage": "https://github.com/robaboyd/ghost#readme",
+  "dependencies": {
+    "concurrently": "^4.1.0",
+    "electron": "^5.0.2",
+    "nodemon": "^1.19.1",
+    "react-speech-recognition": "^2.0.1"
+  }
+}
