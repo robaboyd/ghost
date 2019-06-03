@@ -9,15 +9,6 @@
 
 	let listening = false;
 
-	let p = document.createElement('p');
-	const words = document.querySelector('.words'); 
-	words.appendChild(p)
-
-	let newp = document.createElement('p');
-	const listeningp = document.querySelector('.listening'); 
-	listeningp.appendChild(newp)
-	listeningp.textContent = 'not listening'
-
 	// let g = document.createElement('h2')
 	// const ghostResponse = document.querySelector('.ghost');
 	// ghostResponse.appendChild(g)
@@ -30,33 +21,34 @@
 		amplitude:0.1,
 		speed: .1
 	});
-
+	
 	recognition.addEventListener('result', e => {
 		let transcript = Array.from(e.results)
-			.map(result => result[0])
-			.map(result => result.transcript)
-			.join('')
-			transcript = transcript.toLowerCase();
-			if(transcript === 'omega') {
-				if(e.results[0].isFinal){
-					response('yes, what do you need', 1.5)
+		.map(result => result[0])
+		.map(result => result.transcript)
+		.join('')
+		transcript = transcript.toLowerCase();
+		if(transcript === 'omega') {
+			if(e.results[0].isFinal){
+				response('yes, what do you need', 1.5)
+				$('.wrapper').addClass('listening');
 				 listening = true;
 				}
 			}
 
 			if(listening === true || transcript.includes('omega')) {
-				listeningp.textContent = 'listening'
+				$('.wrapper').addClass('listening')
+				listening = true;
 
 				if(transcript.includes('simon says')){
 					if(e.results[0].isFinal){
 						let text = transcript.split('says');
 						response(text[1], 1.0)
-						listeningp.textContent = 'not listening'
 						listening = false
-						transcript = ''
+						$('.wrapper').removeClass('listening')
 					}
 				}
-
+				//Hue Lights ON
 				if(transcript.includes('turn on the')){
 					if(e.results[0].isFinal){
 						lightControl(true, transcript, "on");
@@ -75,8 +67,8 @@
 						var today = new Date();
 						var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 						response(`let's see, the date is... ${date}`, 1.0)
+						$('.wrapper').removeClass('listening')
 						listening = false
-						listeningp.textContent = 'not listening'
 						transcript = ''
 					}
 				}
@@ -92,9 +84,16 @@
 						} else {
 							min = min.join('')
 						}
-						listeningp.textContent = 'not listening'
+						$('.wrapper').removeClass('listening')
 						listening = false
 						response(`let's see, the time is... ${hours} ${min}`, 1.0)
+					}
+				}
+			
+				if(transcript.includes('reload')){
+					if(e.results[0].isFinal){
+						response('Rebooting Systems...', 1.0)
+						location.reload();
 					}
 				}
 			}
@@ -102,12 +101,12 @@
 			if(transcript.includes('stop')){
 				if(e.results[0].isFinal){
 					speechSynthesis.cancel()
+					$('.wrapper').removeClass('listening')	
 					listening = false
 					console.log(`not listening `);
-					listeningp.textContent = 'not listening'
 				}
 			}
-		p.textContent = transcript
+		console.log(transcript);
 	})
 	
 	const response = (text, rate,) => {
@@ -167,7 +166,7 @@
 									
 					})
 				})
-				listeningp.textContent = 'not listening'
+				$('.wrapper').removeClass('listening')
 				listening = false
 	}
 
