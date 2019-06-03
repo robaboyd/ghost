@@ -37,7 +37,6 @@
 			.map(result => result.transcript)
 			.join('')
 			transcript = transcript.toLowerCase();
-			console.log(e.results)
 			if(transcript === 'omega') {
 				if(e.results[0].isFinal){
 					response('yes, what do you need', 1.5)
@@ -60,34 +59,14 @@
 
 				if(transcript.includes('turn on the')){
 					if(e.results[0].isFinal){
-						$.get(`https://discovery.meethue.com/`, (data) => {
-							let ip = data[0].internalipaddress;
-							let url = `http://${ip}/api/pf3enyrZJz4uvwgYf90t9E2FzLM4tW2GeGSnO-ut/lights` 
-							$.get(url, done => {
-								let lightname = transcript.split("on the")
-								lightname = lightname[1]
-								let array = []
-								
-								for(let i = 1; i <= Object.keys(done).length; i++){
-									array.push(done[i].name)
-								}
-								array.forEach((light, index)=> {
-									if(lightname.trim() === light.toLowerCase()){
-										let data = {on: true}
-										$.ajax({
-											url: `${url}/${index + 1}/state`,
-											type: 'PUT',
-											data: JSON.stringify(data), 
-											success: function() {
-												response('yes, doing that now', 1.0)
-												
-											}
-									 });
-									}
-								})
-							
-							})
-						})
+						lightControl(true, transcript, "on");
+						
+						}
+					}
+					//Hue Lights OFF
+					if(transcript.includes('turn off the')){
+						if(e.results[0].isFinal){
+							lightControl(false, transcript, "off");
 					}
 				}
 				
@@ -150,6 +129,47 @@
 		return text
 	}
 
+	const lightControl = (state, transcript, command) => {
+		$.get(`https://discovery.meethue.com/`, (data) => {
+			let ip = data[0].internalipaddress;
+			let url = `http://${ip}/api/pf3enyrZJz4uvwgYf90t9E2FzLM4tW2GeGSnO-ut/lights` 
+			$.get(url, done => {
+				let lightname = transcript.split(`${command} the`)
+				lightname = lightname[1]
+				let array = []
+								
+				for(let i = 1; i <= Object.keys(done).length; i++){
+					array.push({"name": done[i].name, "index": i})
+				}
+				var options = {
+					shouldSort: true,
+					threshold: 0.6,
+					location: 0,
+					distance: 100,
+					maxPatternLength: 32,
+					minMatchCharLength: 1,
+					keys: [
+						"name",
+					]
+				};
+				var fuse = new Fuse(array, options)
+				var result = fuse.search(lightname.trim())
+				let data = {on: state}
+				$.ajax({
+					url: `${url}/${result[0].index}/state`,
+					type: 'PUT',
+					data: JSON.stringify(data), 
+					success: function() {
+						response('yes, doing that now', 1.0)
+						
+					}
+				});
+									
+					})
+				})
+				listeningp.textContent = 'not listening'
+				listening = false
+	}
 
 	recognition.addEventListener('end', recognition.start)
 	recognition.start();
