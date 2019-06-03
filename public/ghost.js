@@ -37,7 +37,7 @@
 			.map(result => result.transcript)
 			.join('')
 			transcript = transcript.toLowerCase();
-
+			console.log(e.results)
 			if(transcript === 'omega') {
 				if(e.results[0].isFinal){
 					response('yes, what do you need', 1.5)
@@ -46,17 +46,48 @@
 			}
 
 			if(listening === true || transcript.includes('omega')) {
-				listening === true
 				listeningp.textContent = 'listening'
+
 				if(transcript.includes('simon says')){
 					if(e.results[0].isFinal){
-						console.log('repeating...')
 						let text = transcript.split('says');
-						console.log(text[1]);
-						listening = false
-						listening.textContent = 'not listening'
-						console.log(`not listening `);
 						response(text[1], 1.0)
+						listeningp.textContent = 'not listening'
+						listening = false
+						transcript = ''
+					}
+				}
+
+				if(transcript.includes('turn on the')){
+					if(e.results[0].isFinal){
+						$.get(`https://discovery.meethue.com/`, (data) => {
+							let ip = data[0].internalipaddress;
+							let url = `http://${ip}/api/pf3enyrZJz4uvwgYf90t9E2FzLM4tW2GeGSnO-ut/lights` 
+							$.get(url, done => {
+								let lightname = transcript.split("on the")
+								lightname = lightname[1]
+								let array = []
+								
+								for(let i = 1; i <= Object.keys(done).length; i++){
+									array.push(done[i].name)
+								}
+								array.forEach((light, index)=> {
+									if(lightname.trim() === light.toLowerCase()){
+										let data = {on: true}
+										$.ajax({
+											url: `${url}/${index + 1}/state`,
+											type: 'PUT',
+											data: JSON.stringify(data), 
+											success: function() {
+												response('yes, doing that now', 1.0)
+												
+											}
+									 });
+									}
+								})
+							
+							})
+						})
 					}
 				}
 				
@@ -67,6 +98,7 @@
 						response(`let's see, the date is... ${date}`, 1.0)
 						listening = false
 						listeningp.textContent = 'not listening'
+						transcript = ''
 					}
 				}
 				
@@ -81,9 +113,8 @@
 						} else {
 							min = min.join('')
 						}
-						listening = false
-						console.log(`not listening `);
 						listeningp.textContent = 'not listening'
+						listening = false
 						response(`let's see, the time is... ${hours} ${min}`, 1.0)
 					}
 				}
@@ -95,7 +126,7 @@
 					listening = false
 					console.log(`not listening `);
 					listeningp.textContent = 'not listening'
-					}
+				}
 			}
 		p.textContent = transcript
 	})
@@ -112,7 +143,6 @@
 			siriWave.amplitude = 0.1
 			siriWave.speed = .1
 			speechSynthesis.cancel() 
-		
 		}
 		
 		speechSynthesis.speak(Omega);
