@@ -20,7 +20,8 @@
 		faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
 		faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
 		faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-		faceapi.nets.faceExpressionNet.loadFromUri('/models')
+		faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+		faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
 	]).then(startVideo)
 
 	video.addEventListener('play', () => {
@@ -38,7 +39,18 @@
 		}, 100)
 	})
 
+	//identification
+	const loadLabeledImages = () => {
+		const labels = ['Bobby']
 
+		return Promise.all(
+			labels.map(async label => {
+				for(let i =1; i <=2; i++) {
+					const img = await faceapi.fetchImage(`https://github.com/robaboyd/ghost/blob/master/public/bobby_boyd.jpg?raw=true`)
+				}
+			})
+		)
+	}
 	//-------------------------------------------------------------------------------
 
 	// let g = document.createElement('h2')
