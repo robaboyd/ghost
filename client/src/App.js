@@ -99,7 +99,11 @@ function App() {
 		speechSynthesis.speak(Omega);
     
 		return text
-  }
+	}
+	
+	//webcam
+	let video = document.getElementById('video')
+	 navigator.getUserMedia({video:{}}, stream => video.srcObject = stream, err => console.error(err))
   
   // recognition.addEventListener('end', recognition.start)
   // recognition.start();
@@ -107,6 +111,9 @@ function App() {
     <div className="App">
       {transcript}
       <div id="siri-container"></div>
+			<div className="cam">
+				<video id='video' width='720' height='560' autoplay muted></video>
+			</div>
     </div>
   );
 }

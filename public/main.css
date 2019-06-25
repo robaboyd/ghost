@@ -1,5 +1,5 @@
 body {
-	overflow: hidden;
+	overflow-x: hidden;
 	padding: 0;
 	margin: 0;
 }
@@ -20,7 +20,7 @@ h2 {
 }
 
 .listening {
-	border-top: 7px solid red !important;
+	border-top: 7px solid rgba(255, 0, 0, 0.404) !important;
 }
 
 .wrapper {
@@ -31,4 +31,16 @@ h2 {
 	width: 100vw;
 	height: 100vh;
 	transition: all .5s ease;
+}
+
+canvas {
+	position: absolute;
+}
+
+#siri-container>canvas {
+	position: relative;
+}
+
+#video {
+	position: absolute;
 }

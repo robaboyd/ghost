@@ -9,6 +9,38 @@
 
 	let listening = false;
 
+	let video = document.getElementById('video')
+
+	const startVideo = () =>{
+		navigator.getUserMedia({video:{}}, stream => video.srcObject = stream, err => console.error(err))
+	}
+
+	//face rec-------------------------------------------------------------------------------------
+	Promise.all([
+		faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+		faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+		faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+		faceapi.nets.faceExpressionNet.loadFromUri('/models')
+	]).then(startVideo)
+
+	video.addEventListener('play', () => {
+		const canvas = faceapi.createCanvasFromMedia(video)
+		const vidDiv = document.getElementById('centerDiv')
+		vidDiv.appendChild(canvas)
+		const displaySize = { width: video.width, height: video.height}
+		faceapi.matchDimensions(canvas, displaySize)
+		setInterval(async () => {
+			const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+			console.log(detections);
+			const resizedDetections = faceapi.resizeResults(detections, displaySize)
+			canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+			faceapi.draw.drawDetections(canvas, resizedDetections)
+		}, 100)
+	})
+
+
+	//-------------------------------------------------------------------------------
+
 	// let g = document.createElement('h2')
 	// const ghostResponse = document.querySelector('.ghost');
 	// ghostResponse.appendChild(g)
@@ -28,6 +60,8 @@
 		.map(result => result.transcript)
 		.join('')
 		transcript = transcript.toLowerCase();
+
+		//commands
 		if(transcript === 'omega') {
 			if(e.results[0].isFinal){
 				response('yes, what do you need', 1.5)
