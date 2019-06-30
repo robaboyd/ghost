@@ -16,6 +16,8 @@
 	}
 
 	//face rec-------------------------------------------------------------------------------------
+
+
 	Promise.all([
 		faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
 		faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
@@ -24,33 +26,48 @@
 		faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
 	]).then(startVideo)
 
-	video.addEventListener('play', () => {
+	video.addEventListener('play', async () => {
+
+		// const labeledFaceDescriptors = loadLabeledImages()
+		// const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, .6)
 		const canvas = faceapi.createCanvasFromMedia(video)
 		const vidDiv = document.getElementById('centerDiv')
 		vidDiv.appendChild(canvas)
+		const labeledFaceDescriptors = await loadLabeledImages()
 		const displaySize = { width: video.width, height: video.height}
+		const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
 		faceapi.matchDimensions(canvas, displaySize)
 		setInterval(async () => {
 			const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
 			console.log(detections);
 			const resizedDetections = faceapi.resizeResults(detections, displaySize)
-			canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
-			faceapi.draw.drawDetections(canvas, resizedDetections)
+			const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
+			results.forEach((result, i) => {
+				console.log(result);
+				const box = resizedDetections[i].detection.box
+				const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
+				drawBox.draw(canvas)
+			})
+			// canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+			// faceapi.draw.drawDetections(canvas, resizedDetections)
 		}, 100)
 	})
 
 	//identification
 	const loadLabeledImages = () => {
-		const labels = ['Bobby']
-
+		const labels =['Bobby']
 		return Promise.all(
 			labels.map(async label => {
-				for(let i =1; i <=2; i++) {
-					const img = await faceapi.fetchImage(`https://github.com/robaboyd/ghost/blob/master/public/bobby_boyd.jpg?raw=true`)
+				for (let i =1; i <=2; ) {
+					const img = await faceapi.fetchImage(`https://raw.githubusercontent.com/robaboyd/ghost/master/public/people/${labels}/${i}.jpg`)
+					const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
+					descriptions.push(detections.descriptor)
 				}
+
+				return new faceapi.LabeledFaceDescriptors(label, descriptions)
 			})
 		)
-	}
+	}	
 	//-------------------------------------------------------------------------------
 
 	// let g = document.createElement('h2')
