@@ -1,78 +1,19 @@
-//speech recognition
-	window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
+//socket
+var socket = io('http://localhost:3001');
+  socket.on('connect', function(){
+		console.log('connected');
+		socket.emit('test')
+		//speech recognition
+		window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+		
 	var Omega = new SpeechSynthesisUtterance();
 	
 	const recognition = new SpeechRecognition();
 
 	recognition.interimResults = true;
-
+	
 	let listening = false;
-
-	let video = document.getElementById('video')
-
-	const startVideo = () =>{
-		navigator.getUserMedia({video:{}}, stream => video.srcObject = stream, err => console.error(err))
-	}
-
-	//face rec-------------------------------------------------------------------------------------
-
-
-	Promise.all([
-		faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-		faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-		faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-		faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-		faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
-	]).then(startVideo)
-
-	video.addEventListener('play', async () => {
-
-		// const labeledFaceDescriptors = loadLabeledImages()
-		// const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, .6)
-		const canvas = faceapi.createCanvasFromMedia(video)
-		const vidDiv = document.getElementById('centerDiv')
-		vidDiv.appendChild(canvas)
-		const labeledFaceDescriptors = await loadLabeledImages()
-		const displaySize = { width: video.width, height: video.height}
-		const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
-		faceapi.matchDimensions(canvas, displaySize)
-		setInterval(async () => {
-			const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
-			console.log(detections);
-			const resizedDetections = faceapi.resizeResults(detections, displaySize)
-			const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
-			results.forEach((result, i) => {
-				console.log(result);
-				const box = resizedDetections[i].detection.box
-				const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
-				drawBox.draw(canvas)
-			})
-			// canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
-			// faceapi.draw.drawDetections(canvas, resizedDetections)
-		}, 100)
-	})
-
-	//identification
-	const loadLabeledImages = () => {
-		const labels =['Bobby']
-		return Promise.all(
-			labels.map(async label => {
-				for (let i =1; i <=2; ) {
-					const img = await faceapi.fetchImage(`https://raw.githubusercontent.com/robaboyd/ghost/master/public/people/${labels}/${i}.jpg`)
-					const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor()
-					descriptions.push(detections.descriptor)
-				}
-
-				return new faceapi.LabeledFaceDescriptors(label, descriptions)
-			})
-		)
-	}	
-	//-------------------------------------------------------------------------------
-
-	// let g = document.createElement('h2')
-	// const ghostResponse = document.querySelector('.ghost');
-	// ghostResponse.appendChild(g)
+	
 	var siriWave = new SiriWave({
 		container: document.getElementById('siri-container'),
 		style: "ios9",
@@ -89,20 +30,27 @@
 		.map(result => result.transcript)
 		.join('')
 		transcript = transcript.toLowerCase();
-
+		
 		//commands
 		if(transcript === 'omega') {
 			if(e.results[0].isFinal){
-				response('yes, what do you need', 1.5)
+				listening = true;
 				$('.wrapper').addClass('listening');
-				 listening = true;
+				//get name
+				socket.emit('getname')
+				socket.on('getname', data => {
+					
+					response(`yes, what do you need ${data}`, 1.5)
+
+				})
+				
 				}
 			}
-
+			
 			if(listening === true || transcript.includes('omega')) {
 				$('.wrapper').addClass('listening')
 				listening = true;
-
+				
 				if(transcript.includes('simon says')){
 					if(e.results[0].isFinal){
 						let text = transcript.split('says');
@@ -116,12 +64,12 @@
 					if(e.results[0].isFinal){
 						lightControl(true, transcript, "on");
 						
-						}
 					}
-					//Hue Lights OFF
-					if(transcript.includes('turn off the')){
-						if(e.results[0].isFinal){
-							lightControl(false, transcript, "off");
+				}
+				//Hue Lights OFF
+				if(transcript.includes('turn off the')){
+					if(e.results[0].isFinal){
+						lightControl(false, transcript, "off");
 					}
 				}
 				
@@ -152,7 +100,7 @@
 						response(`let's see, the time is... ${hours} ${min}`, 1.0)
 					}
 				}
-			
+				
 				if(transcript.includes('reload')){
 					if(e.results[0].isFinal){
 						response('Rebooting Systems...', 1.0)
@@ -169,14 +117,14 @@
 					console.log(`not listening `);
 				}
 			}
-		console.log(transcript);
+			console.log(transcript);
 	})
 	
 	const response = (text, rate,) => {
 		console.log(`Speaking... ${text}`);
-			siriWave.amplitude = 2
+		siriWave.amplitude = 2
 			siriWave.speed = .4
-
+			
 		Omega.text = text;
 		Omega.lang = 'en-US';
 		Omega.rate = rate;
@@ -187,10 +135,13 @@
 		}
 		
 		speechSynthesis.speak(Omega);
-
+		
 		return text
 	}
 
+	//get the user name
+
+	
 	const lightControl = (state, transcript, command) => {
 		$.get(`https://discovery.meethue.com/`, (data) => {
 			let ip = data[0].internalipaddress;
@@ -199,7 +150,7 @@
 				let lightname = transcript.split(`${command} the`)
 				lightname = lightname[1]
 				let array = []
-								
+				
 				for(let i = 1; i <= Object.keys(done).length; i++){
 					array.push({"name": done[i].name, "index": i})
 				}
@@ -226,12 +177,14 @@
 						
 					}
 				});
-									
-					})
-				})
-				$('.wrapper').removeClass('listening')
-				listening = false
+				
+			})
+		})
+		$('.wrapper').removeClass('listening')
+		listening = false
 	}
-
+	
 	recognition.addEventListener('end', recognition.start)
 	recognition.start();
+	
+});

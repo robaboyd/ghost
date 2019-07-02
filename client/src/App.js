@@ -3,6 +3,11 @@ import './App.css';
 import SiriWave from 'siriwave';
 import SpeechRecognition from "react-speech-recognition";
 function App() {
+	window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+	var Omega = new SpeechSynthesisUtterance();
+	
+	const recognition = new SpeechRecognition();
   const [listening, setListening] = useState(false)
   // console.log(recognition.started);
   const [transcript, setTranscript] = useState('')

@@ -23,6 +23,8 @@
     "electron": "^5.0.2",
     "lodash": "^4.17.11",
     "nodemon": "^1.19.1",
-    "react-speech-recognition": "^2.0.1"
+    "python-shell": "^1.0.7",
+    "react-speech-recognition": "^2.0.1",
+    "socket.io": "^2.2.0"
   }
 }
