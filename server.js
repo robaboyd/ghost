@@ -11,21 +11,18 @@ const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
 
+//start py script
+let child = exec("start cmd.exe cd C:/Users/Bobby/Documents/Github/ghost /K python fr.py")
+
 io.on('connection', (socket) => {
 
-  socket.on('test', () => {
-    console.log('testing');
-  })
   socket.on('getname', () => {
-    console.log('getname');
     //read from data.txt
     let data = fs.readFileSync(__dirname + '/data.json')
     let names = JSON.parse(data)
     
     if(names.people.length > 1){
-      console.log(names.people.length);
      names.people.splice((names.people.length - 1), 0, 'and')
-      console.log(names.people.toString()); 
 
       io.emit('getname', names.people.toString())
 
@@ -45,8 +42,9 @@ app.get('*', (req, res) => {
 
 //if windows
 //start face_rec
-exec("start cmd.exe cd C:/Users/Bobby/Documents/Github/ghost /K python fr.py")
-
+process.on('exit', () => {
+  child.kill()
+})
 server.listen(PORT, () => {
   console.log(`Listening on PORT:  ${PORT}`);
 });

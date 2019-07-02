@@ -13,6 +13,7 @@ var socket = io('http://localhost:3001');
 	recognition.interimResults = true;
 	
 	let listening = false;
+	let names = ""
 	
 	var siriWave = new SiriWave({
 		container: document.getElementById('siri-container'),
@@ -30,19 +31,19 @@ var socket = io('http://localhost:3001');
 		.map(result => result.transcript)
 		.join('')
 		transcript = transcript.toLowerCase();
-		
+		//get names	
+		socket.emit('getname')
+		socket.on('getname', data => {
+			names = data
+		})
+
 		//commands
 		if(transcript === 'omega') {
 			if(e.results[0].isFinal){
 				listening = true;
 				$('.wrapper').addClass('listening');
 				//get name
-				socket.emit('getname')
-				socket.on('getname', data => {
-					
-					response(`yes, what do you need ${data}`, 1.5)
-
-				})
+					response(`yes, what do you need ${names}`, 1.5)
 				
 				}
 			}
@@ -62,14 +63,14 @@ var socket = io('http://localhost:3001');
 				//Hue Lights ON
 				if(transcript.includes('turn on the')){
 					if(e.results[0].isFinal){
-						lightControl(true, transcript, "on");
+						lightControl(true, transcript, "on", names);
 						
 					}
 				}
 				//Hue Lights OFF
 				if(transcript.includes('turn off the')){
 					if(e.results[0].isFinal){
-						lightControl(false, transcript, "off");
+						lightControl(false, transcript, "off", names);
 					}
 				}
 				
@@ -142,7 +143,7 @@ var socket = io('http://localhost:3001');
 	//get the user name
 
 	
-	const lightControl = (state, transcript, command) => {
+	const lightControl = (state, transcript, command, names) => {
 		$.get(`https://discovery.meethue.com/`, (data) => {
 			let ip = data[0].internalipaddress;
 			let url = `http://${ip}/api/pf3enyrZJz4uvwgYf90t9E2FzLM4tW2GeGSnO-ut/lights` 
