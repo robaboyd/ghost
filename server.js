@@ -42,9 +42,7 @@ app.get('*', (req, res) => {
 
 //if windows
 //start face_rec
-process.on('exit', () => {
-  child.kill()
-})
+
 server.listen(PORT, () => {
   console.log(`Listening on PORT:  ${PORT}`);
 });

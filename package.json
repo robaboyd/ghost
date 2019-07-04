@@ -21,6 +21,7 @@
     "axios": "^0.19.0",
     "concurrently": "^4.1.0",
     "electron": "^5.0.2",
+    "google-tasks-api": "^1.2.0",
     "lodash": "^4.17.11",
     "nodemon": "^1.19.1",
     "python-shell": "^1.0.7",
