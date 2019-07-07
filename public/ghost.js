@@ -7,26 +7,26 @@ var socket = io('http://localhost:3001');
 		socket.emit('test')
 		//speech recognition
 		window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
+		
 	var Omega = new SpeechSynthesisUtterance();
-
+	
 	const recognition = new SpeechRecognition();
 
 	recognition.interimResults = true;
-
+	
 	let listening = false;
 	let names = ""
-
+	
 	var siriWave = new SiriWave({
 		container: document.getElementById('siri-container'),
 		style: "ios9",
-		autostart: true,
+		autostart: true, 
 		width: 640,
 		height: 200,
 		amplitude:0.1,
 		speed: .1
 	});
-
+	
 	recognition.addEventListener('result', e => {
 
 		let transcript = Array.from(e.results)
@@ -36,7 +36,7 @@ var socket = io('http://localhost:3001');
 
 		transcript = transcript.toLowerCase();
 
-		//get names
+		//get names	
 		socket.emit('getname')
 		socket.on('getname', data => {
 			names = data
@@ -52,11 +52,11 @@ var socket = io('http://localhost:3001');
 					response(`yes, what do you need ${names}`, 1.5)
 				}
 			}
-
+			
 			if(listening === true || transcript.includes('omega')) {
 				$('.wrapper').addClass('listening')
 				listening = true;
-
+				
 				if(transcript.includes('simon says')){
 					if(e.results[0].isFinal){
 						let text = transcript.split('says');
@@ -77,7 +77,7 @@ var socket = io('http://localhost:3001');
 						lightControl(false, transcript, "off", names);
 					}
 				}
-
+				
 				if(transcript.includes('%')){
 					if(e.results[0].isFinal){
 						lightControl(false, transcript, "set", names);
@@ -94,7 +94,7 @@ var socket = io('http://localhost:3001');
 						transcript = ''
 					}
 				}
-
+				
 				if(transcript.includes('time is it') || transcript.includes('is the time')){
 					if(e.results[0].isFinal){
 						var today = new Date();
@@ -112,51 +112,36 @@ var socket = io('http://localhost:3001');
 					}
 				}
 
+				if(transcript.includes('*') || transcript.includes('-') || transcript.includes('^') || transcript.includes('+') || transcript.includes('/')){
+					if(e.results[0].isFinal){
+						let math = transcript.split('what is')
+						let answer = nerdamer(math[1])
+						console.log(answer);
+						response(answer, 1.0)
+						listening = false;
+					}
+				}
+
+				// if(transcript.includes('mute')){
+				// 	socket.emit('mute')
+				// 	socket.on('mute', data => {
+				// 		response('muted', 1.0)
+				// 		listening = false
+				// 	})
+				// }
+
 				if(transcript.includes('reload')){
 					if(e.results[0].isFinal){
 						response('Rebooting Systems...', 1.0)
 						location.reload();
 					}
 				}
-
-                if(transcript.includes('todo')){
-                    if(e.results[0].isFinal){
-                        //need to create an api and flutter app for calendar and todo Omega Suite?
-                        response('adding to todo list', 1.0)
-                    }
-                }
-
-                //calendar
-
-                //speaker identification
-
-                //create GH repo
-
-                //spotify
-
-                //youtube
-
-                //google search
-
-                //amazon ordering
-
-                //best buy ordering
-
-                //website opening
-
-                if(transcript.includes('go to')){
-                    if(e.results[0].isFinal){
-                        let website = transcript.split('go to')[1]
-                        window.open(website, '_blank');
-                        response('here you go', 1.0)
-                    }
-                }
 			}
-
+			
 			if(transcript.includes('stop')){
 				if(e.results[0].isFinal){
 					speechSynthesis.cancel()
-					$('.wrapper').removeClass('listening')
+					$('.wrapper').removeClass('listening')	
 					listening = false
 					console.log(`not listening `);
 				}
@@ -164,43 +149,43 @@ var socket = io('http://localhost:3001');
 			console.log(transcript);
 			if(listening === false){
 				lightControl(false, false, 'omega off', false)
-
+				
 			}
 		})
-
+		
 		const response = (text, rate,) => {
 		console.log(`Speaking... ${text}`);
 		siriWave.amplitude = 2
 		siriWave.speed = .4
-
+		
 		Omega.text = text;
 		Omega.lang = 'en-US';
 		Omega.rate = rate;
 		Omega.onend = function(event) {
 			siriWave.amplitude = 0.1
 			siriWave.speed = .1
-			speechSynthesis.cancel()
+			speechSynthesis.cancel() 
 		}
-
+		
 		speechSynthesis.speak(Omega);
-
+		
 		return text
 	}
-
+	
 	//get the user name
 
-
+	
 	const lightControl = (state, transcript, command, names) => {
 		$.get(`https://discovery.meethue.com/`, (data) => {
 			let ip = data[0].internalipaddress;
-			let url = `http://${ip}/api/pf3enyrZJz4uvwgYf90t9E2FzLM4tW2GeGSnO-ut/lights`
+			let url = `http://${ip}/api/pf3enyrZJz4uvwgYf90t9E2FzLM4tW2GeGSnO-ut/lights` 
 			$.get(url, lights => {
 
 				if(transcript !== false){
 					let transSplit = transcript.split('the')
 					let lightFromCommand = transSplit[1]
 
-
+					
 					let array = []
 					for(let i = 1; i <= Object.keys(lights).length; i++){
 						array.push({"name": lights[i].name, "index": i})
@@ -219,35 +204,35 @@ var socket = io('http://localhost:3001');
 					console.log(`💡 ${array}`);
 					var fuse = new Fuse(array, options)
 					light = fuse.search(lightFromCommand)
-
+					
 				console.log(light);
 			}
-
+				
 				if(command === 'on'){
 
 					let data = {on: state}
-
+	
 					$.ajax({
 						url: `${url}/${light[0].index}/state`,
 						type: 'PUT',
-						data: JSON.stringify(data),
+						data: JSON.stringify(data), 
 						success: function() {
 							response('yes, doing that now', 1.0)
-
+							
 						}
 					});
 				}
 				if(command === 'off'){
 
 					let data = {on: state}
-
+	
 					$.ajax({
 						url: `${url}/${light[0].index}/state`,
 						type: 'PUT',
-						data: JSON.stringify(data),
+						data: JSON.stringify(data), 
 						success: function() {
 							response('yes, doing that now', 1.0)
-							lightControl(false, false, 'omega off', false)
+							lightControl(false, false, 'omega off', false)	
 						}
 					});
 				}
@@ -256,33 +241,33 @@ var socket = io('http://localhost:3001');
 					console.log(int);
 					let percentage = (parseInt(int) / 100)
 					let briVal = (254 * percentage)
-
+					
 					let data = {bri: briVal}
 					$.ajax({
 						url: `${url}/${light[0].index}/state`,
 						type: 'PUT',
-						data: JSON.stringify(data),
+						data: JSON.stringify(data), 
 						success: function() {
 							response('yes, doing that now', 1.0)
-
+							
 						}
 					});
-
+					
 				}
-
+				
 				if(command === 'omega on'){
 					console.log('omega on');
-
+					
 					let data = {hue: 0}
 					$.ajax({
 						url: `${url}/3/state`,
 						type: 'PUT',
-						data: JSON.stringify(data),
+						data: JSON.stringify(data), 
 						success: function() {
 							console.log("💡 listening");
 						}
 					});
-
+					
 				}
 
 				if(command === 'omega off'){
@@ -290,12 +275,12 @@ var socket = io('http://localhost:3001');
 					$.ajax({
 						url: `${url}/3/state`,
 						type: 'PUT',
-						data: JSON.stringify(data),
+						data: JSON.stringify(data), 
 						success: function() {
 							console.log("💡 off");
 						}
 					});
-
+					
 				}
 
 			})
@@ -303,8 +288,8 @@ var socket = io('http://localhost:3001');
 		$('.wrapper').removeClass('listening')
 		listening = false
 	}
-
+	
 	recognition.addEventListener('end', recognition.start)
 	recognition.start();
-
+	
 });

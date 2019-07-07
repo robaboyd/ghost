@@ -4,15 +4,17 @@ const PORT = 3001;
 const path = require('path')
 const axios = require('axios')
 const exec = require('child_process').exec
+const spawn = require('child_process').spawn
 const fs = require('fs')
 //socket.io
 const http = require('http');
 
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
-
+const system = require('system-control')();
+const pythonProcess = spawn('python', ['fr.py'], {}) 
 //start py script
-let child = exec("start cmd.exe cd C:/Users/Bobby/Documents/Github/ghost /K python fr.py")
+// let child = exec("start cmd.exe cd C:/Users/Bobby/Documents/Github/ghost /K python fr.py")
 
 io.on('connection', (socket) => {
 
@@ -30,6 +32,12 @@ io.on('connection', (socket) => {
       io.emit('getname', names.people[0])
     }
 
+  })
+
+  socket.on('mute', () => {
+    system.audio.mute(mute).then(function() {
+      io.emit('mute', true)
+    });
   })
 })
 //socket
