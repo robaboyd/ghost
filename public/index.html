@@ -7,14 +7,18 @@
 	<title>Ghost</title>
 	
 	<link rel="stylesheet" type="text/css" href="main.css">
+	<link href="https://fonts.googleapis.com/css?family=Hind+Madurai|Lora|Montserrat:400,700&display=swap" rel="stylesheet">
 </head>
 <body>
 	<div class="wrapper">
-
+		<h1 id="time"></h1>
 		<p class="words"></p>
 		<h2 class="ghost"></h2>
 		<div class="center">
-			<div id="siri-container"></div>
+			<div id="siri-container">
+					<p class="transcript"></p>
+			</div>
+			
 		</div>
 		<div class="video" id="centerDiv">
 			<video  id="video" width='720' height="560" autoplay muted></video>
@@ -25,10 +29,14 @@
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 	crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/google-tasks-api@latest/dist/index.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
 	<script src="socket.io.js"></script>
 	<script src="https://unpkg.com/siriwave/dist/siriwave.js"></script>
 	<script src="nerdamer.core.js"></script> 
 		<script src="fuzzy.js"></script>
+		<script src="brain.js"></script>
 	<script src="ghost.js"></script>
+	<script src="time.js"></script>
 </body>
 </html>

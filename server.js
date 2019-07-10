@@ -8,14 +8,39 @@ const spawn = require('child_process').spawn
 const fs = require('fs')
 //socket.io
 const http = require('http');
-
+const installedPowers = require('./powers')
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
-const system = require('system-control')();
 const pythonProcess = spawn('python', ['fr.py'], {}) 
 //start py script
 // let child = exec("start cmd.exe cd C:/Users/Bobby/Documents/Github/ghost /K python fr.py")
+//onload make sure all powers are installed
 
+const powersPath = __dirname + '/powers'
+const dirs = p => fs.readdirSync(p).filter(f => fs.statSync(path.join(p, f)).isDirectory())
+
+let powers = dirs(powersPath)
+const installPowers = () => {
+  //check to see if that power is in the index.js file
+  fs.readFile(__dirname + '/powers/index.js','utf-8', (err,info) => {
+    console.log(info);
+    powers.forEach(power => {
+      if(info.includes(power)){
+        console.log(`${power} installed`);
+      }else {
+        let a = info.split(',')
+        a.splice(a.length - 1, 0, `${power}: require('./${power}/${power}')`)
+        console.log(a);
+        fs.writeFile(powersPath + '/index.js', a, () => {
+          console.log(`written`);
+        })
+      }
+    }) 
+
+  })
+
+}
+installPowers()
 io.on('connection', (socket) => {
 
   socket.on('getname', () => {
@@ -34,10 +59,19 @@ io.on('connection', (socket) => {
 
   })
 
-  socket.on('mute', () => {
-    system.audio.mute(mute).then(function() {
-      io.emit('mute', true)
-    });
+  // socket.on('mute', () => {
+  //   system.audio.mute(mute).then(function() {
+  //     io.emit('mute', true)
+  //   });
+  // })
+
+  socket.on('commandSent', (transcript) => {
+    console.log(`🤖 ${transcript}`);
+    
+    //run each power
+    for (var p in installedPowers){
+        installedPowers[p].main()
+    }
   })
 })
 //socket

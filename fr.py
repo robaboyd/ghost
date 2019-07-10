@@ -96,7 +96,7 @@ while True:
                     font, 1.0, (255, 255, 255), 1)
 
     # Display the resulting image
-    cv2.imshow('Video', frame)
+    # cv2.imshow('Video', frame)
 
     # Hit 'q' on the keyboard to quit!
     if cv2.waitKey(1) & 0xFF == ord('q'):
