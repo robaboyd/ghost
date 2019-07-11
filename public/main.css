@@ -7,6 +7,9 @@ body {
 h1 {
 	font-family: 'Montserrat', serif;
 	font-weight: 400;
+	font-size: 70px;
+	padding: 30px;
+	margin: 0;
 }
 
 h3 {
@@ -27,7 +30,7 @@ h2 {
 
 .center {
 	width: 100vw;
-	height: 100vh;
+	height: 90vh;
 	display: flex;
 	justify-content: center;
 	align-content: center;
@@ -61,13 +64,23 @@ canvas {
 }
 
 #time {
-	font-size: 91px;
+	font-size: 70px;
 	margin: 0;
 	position: absolute;
 	padding: 30px;
 	top: 0;
 	left: 0;
 }
+
+#weather {
+	font-size: 20px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 30px;
+	max-width: 400px;
+}
+
 
 .transcript {
 	transition: all .5s ease;

@@ -13,9 +13,9 @@ const server = http.createServer(app);
 const io = require('socket.io').listen(server);
 const pythonProcess = spawn('python', ['fr.py'], {}) 
 //start py script
-// let child = exec("start cmd.exe cd C:/Users/Bobby/Documents/Github/ghost /K python fr.py")
-//onload make sure all powers are installed
+// let child = exec("start cmd.exe cd C:/Users/Bobby/Documents/Github/ghost/public /K start index.html")
 
+//onload make sure all powers are installed----------------------------
 const powersPath = __dirname + '/powers'
 const dirs = p => fs.readdirSync(p).filter(f => fs.statSync(path.join(p, f)).isDirectory())
 
@@ -41,6 +41,7 @@ const installPowers = () => {
 
 }
 installPowers()
+//-----------------------------------------------------------------------
 io.on('connection', (socket) => {
 
   socket.on('getname', () => {
@@ -65,14 +66,27 @@ io.on('connection', (socket) => {
   //   });
   // })
 
+  socket.on('lightActivate', () => {
+    installedPowers.lights.main('omega on')
+  })
+
+  socket.on('lightsDeactivate', () => {
+    installedPowers.lights.main('omega off')
+  })
+
+  //when a command is sent run each power
   socket.on('commandSent', (transcript) => {
     console.log(`🤖 ${transcript}`);
     
     //run each power
     for (var p in installedPowers){
-        installedPowers[p].main()
+       let x = installedPowers[p].main(transcript)
+       console.log(` x ${x}`);
+      socket.emit('commandDone', x)
     }
   })
+
+  
 })
 //socket
 app.use(express.static(__dirname + '/public'));

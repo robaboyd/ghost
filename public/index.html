@@ -12,6 +12,7 @@
 <body>
 	<div class="wrapper">
 		<h1 id="time"></h1>
+		<h1 id="weather"></h1>
 		<p class="words"></p>
 		<h2 class="ghost"></h2>
 		<div class="center">
@@ -20,17 +21,14 @@
 			</div>
 			
 		</div>
-		<div class="video" id="centerDiv">
-			<video  id="video" width='720' height="560" autoplay muted></video>
-		</div>
-	</div>
+	
 	<script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 	crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/google-tasks-api@latest/dist/index.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="socket.io.js"></script>
 	<script src="https://unpkg.com/siriwave/dist/siriwave.js"></script>
 	<script src="nerdamer.core.js"></script> 
@@ -38,5 +36,7 @@
 		<script src="brain.js"></script>
 	<script src="ghost.js"></script>
 	<script src="time.js"></script>
+	<script src="ui.js"></script>
+	<script src="weather.js"></script>
 </body>
 </html>

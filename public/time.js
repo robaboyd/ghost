@@ -8,6 +8,7 @@ function time() {
   var m = d.getMinutes();
   var h = d.getHours();
   if(h > 12){
+    //if its pm
     h =  h -12
     if(m < 10){
       m = '0' + m
@@ -15,16 +16,25 @@ function time() {
     } else {
       timeP.textContent = h + ":" + m + 'pm' ;
     }
-  } else {
+  } else if(h === 0){
+    //if its midnight
+    h = 12
     if(m < 10){
       m = '0' + m
-       timeP.textContent = h + ":" + m + 'pm' ;
+       timeP.textContent = h + ":" + m + 'am' ;
     } else {
-      timeP.textContent = h + ":" + m + 'pm' ;
+      timeP.textContent = h + ":" + m + 'am' ;
+    }
+
+  } else{
+    //if its the am 
+    if(m < 10){
+      m = '0' + m
+       timeP.textContent = h + ":" + m + 'am' ;
+    } else {
+      timeP.textContent = h + ":" + m + 'am' ;
     }
   }
 }
 
 setInterval(time, 1000);
-
-// dateP.innerHTML = date.toLocaleDateString();

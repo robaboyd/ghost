@@ -1,7 +1,10 @@
 const simon = {
   main: (transcript) => {
     
-    console.log(`simon main`);
+    if(transcript.includes('simon says')){
+      let text = transcript.split('says');
+      return {finished: true, speech: text[1]}
+    }
   }
 } 
 
