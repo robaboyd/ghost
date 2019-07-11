@@ -55,11 +55,9 @@ const lightControl = (state, transcript, command ) => {
                         "name",
                     ]
                 };
-                console.log(`💡 ${array}`);
                 var fuse = new Fuse(array, options)
                 light = fuse.search(lightFromCommand)
 
-                console.log(light);
             }
 
             if(command === 'on'){
@@ -70,11 +68,9 @@ const lightControl = (state, transcript, command ) => {
                 })
             }
             if(command === 'off'){
-                console.log('running lights off');
                 let data = {on: state}
 
                 axios.put(`${url}/${light[0].index}/state`, data).then(done => {
-                    console.log(done);
                     return {finished: true, speech:`yes, doing that now.`}
                 })
       
@@ -82,7 +78,6 @@ const lightControl = (state, transcript, command ) => {
             if(command === 'set'){
                
                 let int = transcript.replace( /[^\d.]/g, '' );
-                console.log(int);
                 let percentage = (parseInt(int) / 100)
                 let briVal = (254 * percentage)
 
@@ -94,7 +89,6 @@ const lightControl = (state, transcript, command ) => {
             }
 
             if(command === 'omega on'){
-                console.log('omega on');
 
                 let data = {hue: 0}
                 axios.put(`${url}/${light[0].index}/state`, data).then(done => {

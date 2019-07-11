@@ -32,7 +32,6 @@ const installPowers = () => {
         a.splice(a.length - 1, 0, `${power}: require('./${power}/${power}')`)
         console.log(a);
         fs.writeFile(powersPath + '/index.js', a, () => {
-          console.log(`written`);
         })
       }
     }) 
@@ -80,8 +79,8 @@ io.on('connection', (socket) => {
     
     //run each power
     for (var p in installedPowers){
-       let x = installedPowers[p].main(transcript)
-       console.log(` x ${x}`);
+       let x = installedPowers[p].main(transcript, io)
+       console.log(` x ${JSON.stringify(x)}`);
       socket.emit('commandDone', x)
     }
   })

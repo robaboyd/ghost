@@ -61,6 +61,7 @@ socket.on('connect', function(){
 			}
 		}	
 		if(transcript === 'omega'){
+			console.log('just omega');
 			if(e.results[0].isFinal){
 				$('.wrapper').addClass('listening');
 				listening = true
@@ -80,10 +81,17 @@ socket.on('connect', function(){
 				// 	response('nevermind then', 1.0)
 					
 				// }
-				response(data.speech, 1.0)
+				if(data !== null){
+
+					response(data.speech, 1.0)
+				}
 				listening = false
 		})
 
+		//on power run
+		socket.on('powerRun', (data) => {
+			console.log(`🤖 ${JSON.stringify(data)}`);
+		})
 			
 			if(transcript.includes('stop')){
 				if(e.results[0].isFinal){
@@ -93,7 +101,10 @@ socket.on('connect', function(){
 					console.log(`not listening `);
 				}
 			}
-			console.log(transcript);
+
+			if(e.results[0].isFinal){
+				console.log(transcript);
+			}
 		
 		})
 		
