@@ -12,6 +12,7 @@ const installedPowers = require('./powers')
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
 const pythonProcess = spawn('python', ['fr.py'], {}) 
+const fft = require('fft-js').fft
 //start py script
 // let child = exec("start cmd.exe cd C:/Users/Bobby/Documents/Github/ghost/public /K start index.html")
 
@@ -40,6 +41,15 @@ const installPowers = () => {
 
 }
 installPowers()
+const getAudioNames = () => {
+  console.log(`audionames`);
+  //get songs
+  let data = {}
+  data = fs.readdirSync(__dirname + '/audio')
+  console.log(data);
+  fs.writeFileSync(__dirname + '/audioNames.json', data)
+}
+getAudioNames();
 //-----------------------------------------------------------------------
 io.on('connection', (socket) => {
 
@@ -73,16 +83,18 @@ io.on('connection', (socket) => {
     installedPowers.lights.main('omega off')
   })
 
+ 
+
   //when a command is sent run each power
   socket.on('commandSent', (transcript) => {
     console.log(`🤖 ${transcript}`);
-    
+    let x = '' 
     //run each power
     for (var p in installedPowers){
-       let x = installedPowers[p].main(transcript, io)
+       x = installedPowers[p].main(transcript, io)
        console.log(` x ${JSON.stringify(x)}`);
-      socket.emit('commandDone', x)
-    }
+      }
+      
   })
 
   

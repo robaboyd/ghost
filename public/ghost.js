@@ -3,7 +3,8 @@ let p = document.createElement('p')
 const words = document.querySelector('.transcript')
 
 //socket
-var socket = io('http://localhost:3001');
+var socket = io('http://🤖:3001');
+
 
 socket.on('connect', function(){
 	console.log('connected');
@@ -52,7 +53,7 @@ socket.on('connect', function(){
 		// })
 		
 		//if the transcript is just omega
-		if(listening === true || transcript.includes('omega')) {
+		if(listening === true  || transcript.includes('omega')) {
 			$('.wrapper').addClass('listening');
 			socket.emit('lightActivate', null)	
 			//send messages to the server to run the scripts
@@ -62,9 +63,9 @@ socket.on('connect', function(){
 		}	
 		if(transcript === 'omega'){
 			console.log('just omega');
+			listening = true
 			if(e.results[0].isFinal){
 				$('.wrapper').addClass('listening');
-				listening = true
 				socket.emit('lightActivate', null)	
 				response(`yes, what do you need ${names}`, 1.5)
 			}

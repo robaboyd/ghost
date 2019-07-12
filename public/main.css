@@ -29,8 +29,6 @@ h2 {
 }
 
 .center {
-	width: 100vw;
-	height: 90vh;
 	display: flex;
 	justify-content: center;
 	align-content: center;
@@ -41,14 +39,34 @@ h2 {
 	border-top: 7px solid rgba(255, 0, 0, 0.404) !important;
 }
 
+.main {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: #000000;
+	height: 100vh;
+}
+
+.topbar {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	width: 90vw;
+	align-items: center;
+	align-content: center;
+}
+
 .wrapper {
 	border-top: 7px solid black;
 	background-color: black;
 	padding: 0;
-	margin: 0;
-	width: 100vw;
+	margin: 0px;
+	max-width: 90vw;
+	width: 100%;
 	height: 100vh;
 	transition: all .5s ease;
+	border: 1px solid #fffffF;
 }
 
 canvas {
@@ -64,17 +82,15 @@ canvas {
 }
 
 #time {
-	font-size: 70px;
+	font-size: 30px;
 	margin: 0;
-	position: absolute;
 	padding: 30px;
 	top: 0;
 	left: 0;
 }
 
 #weather {
-	font-size: 20px;
-	position: absolute;
+	font-size: 30px;
 	right: 0;
 	top: 0;
 	padding: 30px;

@@ -2,20 +2,24 @@ const axios = require('axios')
 const Fuse = require('fuse.js')
 let done = false
 const lights = {
-    main: (transcript) => {
+    main: (transcript, socket) => {
         //Hue Lights ON
         if(transcript.includes('turn on the')){
              lightControl(true, transcript, "on");
-             return {finished: true, speech:`yes, doing that now.`}
+             let x = {finished: true, speech:`yes, doing that now.`}
+             socket.emit('commandDone', x)
         }
         if(transcript.includes('turn off the')){
              lightControl(false, transcript, "off");
-             return {finished: true, speech:`yes, doing that now.`}
+             
+             let x = {finished: true, speech:`yes, doing that now.`}
+             socket.emit('commandDone', x)
         }
         if(transcript.includes('%')){
 
              lightControl(false, transcript, "set")
-             return {finished: true, speech:`yes, doing that now.`}
+             let x = {finished: true, speech:`yes, doing that now.`}
+             socket.emit('commandDone', x)
         }
         if(transcript.includes('omega on')){
 
@@ -107,7 +111,6 @@ const lightControl = (state, transcript, command ) => {
 
         })
     })
-    return 
 
 }
 module.exports = lights;

@@ -1,5 +1,5 @@
 const time = {
-  main: (transcript) => {
+  main: (transcript, socket) => {
     
     if(transcript.includes('time is it') || transcript.includes('is the time')){
           // showText(transcript)
@@ -15,7 +15,8 @@ const time = {
           // $('.wrapper').removeClass('listening')
           // listening = false
           // response(`let's see, the time is... ${hours} ${min}`, 1.0)
-          return {finished: true, speech:`let's see, the time is... ${hours} ${min}`} 
+          let x = {finished: true, speech:`let's see, the time is... ${hours} ${min}`} 
+          socket.emit('commandDone', x)
       }
   }
 } 

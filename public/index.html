@@ -10,17 +10,23 @@
 	<link href="https://fonts.googleapis.com/css?family=Hind+Madurai|Lora|Montserrat:400,700&display=swap" rel="stylesheet">
 </head>
 <body>
-	<div class="wrapper">
-		<h1 id="time"></h1>
-		<h1 id="weather"></h1>
-		<p class="words"></p>
-		<h2 class="ghost"></h2>
-		<div class="center">
-			<div id="siri-container">
-					<p class="transcript"></p>
-			</div>
+	<div class="main">
+		<div class="topbar">
+			<h1 id="time"></h1>
+			<h1 id="weather"></h1>
+		</div>
+
+		<div class="wrapper">
+			<p class="words"></p>
+			<h2 class="ghost"></h2>
 			
 		</div>
+				<div class="center">
+					<div id="siri-container">
+						<p class="transcript"></p>
+					</div>
+				</div>
+	</div>
 	
 	<script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -38,5 +44,6 @@
 	<script src="time.js"></script>
 	<script src="ui.js"></script>
 	<script src="weather.js"></script>
+	<script src="audioAnalyze.js"></script>
 </body>
 </html>
