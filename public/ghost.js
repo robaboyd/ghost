@@ -1,13 +1,11 @@
-//TODO Draggable UI
+
 let p = document.createElement('p')
 const words = document.querySelector('.transcript')
 
 //socket
 // var socket = io('http://🤖:3001');
 var socket = io('http://localhost:3001');
-
-
-
+let arr = []
 socket.on('connect', function () {
 	console.log('connected');
 	//get weather
@@ -36,7 +34,8 @@ socket.on('connect', function () {
 
 	recognition.addEventListener('result', e => {
 		console.log(listening);
-
+		
+		//3.4028234
 		let transcript = Array.from(e.results)
 			.map(result => result[0])
 			.map(result => result.transcript)
@@ -148,3 +147,4 @@ socket.on('connect', function () {
 	recognition.start();
 
 });
+

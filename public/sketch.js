@@ -1,12 +1,15 @@
-let audio;
-let fft;
+// let audio;
+// let fft;
 
-function preload() {
-  //analyze each recording
-  
-  for(let i = 0; i < )
-}
+// function setup() {
+//   mic = new p5.AudioIn();
+//   mic.start();
+//   fft = new p5.FFT()
+//   fft.setInput(mic);
 
-function setup() {
+// }
 
-}
+// function draw(){
+//   let spectrum = fft.analyze();
+//   console.log(spectrum);
+// }
