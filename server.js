@@ -13,6 +13,7 @@ const server = http.createServer(app);
 const io = require('socket.io').listen(server);
 const pythonProcess = spawn('python', ['fr.py'], {}) 
 const brain = require('brain.js')
+const omegaBrain = require('./brain.json')
 //start py script
 // let child = exec("start cmd.exe cd C:/Users/Bobby/Documents/Github/ghost/public /K start index.html")
 
@@ -41,6 +42,16 @@ const installPowers = () => {
 
 }
 installPowers()
+
+const network = new brain.recurrent.LSTM();
+const trainingData = data.map(item => ({
+  input: item.text,
+  output: item.category
+}));
+
+network.train(trainingData, {
+  iterations: 2000
+});
   
 const getAudioNames = () => {
   console.log(`audionames`);

@@ -1,0 +1,77 @@
+[{
+    "text": "bedroom light",
+    "category": "lights"
+  },
+  {
+    "text": "light",
+    "category": "light"
+  },
+  {
+    "text": "table light",
+    "category": "light"
+  },
+  {
+    "text": "living room lamp",
+    "category": "light"
+  },
+  {
+    "text": "lightstrip",
+    "category": "lights"
+  },
+  {
+    "text": "program",
+    "category": "software"
+  },
+  {
+    "text": "power supply",
+    "category": "hardware"
+  },
+  {
+    "text": "drive",
+    "category": "hardware"
+  },
+  {
+    "text": "it needs more memory",
+    "category": "hardware"
+  },
+  {
+    "text": "code",
+    "category": "software"
+  },
+  {
+    "text": "i found some bugs in the code",
+    "category": "software"
+  },
+  {
+    "text": "i swapped the memory",
+    "category": "hardware"
+  },
+  {
+    "text": "i tested the code",
+    "category": "software"
+  },
+  {
+    "text": "i love computers",
+    "category": "hardware"
+  },
+  {
+    "text": "programming",
+    "category": "software"
+  },
+  {
+    "text": "i broke my pc",
+    "category": "hardware"
+  },
+  {
+    "text": "computer",
+    "category": "hardware"
+  },
+  {
+    "text": "buy me a laptop",
+    "category": "hardware"
+  },
+  {
+    "text": "i love to play games",
+    "category": "software"
+  }
+]
